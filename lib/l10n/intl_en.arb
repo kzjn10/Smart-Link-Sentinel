@@ -1,9 +1,20 @@
 {
   "app_name": "AI Deeplink Tester",
-  "common_hint_deeplink": "Deeplink",
+  "common_label_yourLink": "Enter your link",
+  "common_hint_deeplink": "myDeepLink://",
   "common_tooltip_scanQrCode": "Scan QR Code",
   "common_tooltip_paste": "Paste",
   "common_tooltip_clear": "Clear",
+  "common_tooltip_clearAllHistory": "Clear All History",
   "common_text_openDeeplink": "Open Deeplink",
+  "common_text_resourceIdentifiers": "Resource Identifiers",
+  "common_text_history": "History",
+  "common_text_settings": "Settings",
+  "common_text_urlParts": "URL Parts",
+  "common_text_queryString": "Query String",
+  "common_message_failedToParseDeeplink": "Failed to parse the deeplink.",
+  "common_message_couldNotLaunchDeepLink": "Could not launch the deep link.",
+  "common_message_noAppFoundToHandleDeepLink": "No app found to handle the deep link.",
+  "common_message_copiedToClipboard": "Copied to clipboard.",
   "end_content": "-- Please put this line at the end of file --"
 }

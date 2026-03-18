@@ -1,10 +1,8 @@
-import "package:ai_deeplink_tester/presentation/theme/status_colors.dart";
 import "package:flutter/material.dart";
 
 import "../../gen/fonts.gen.dart";
 
 class AiDeeplinkTheme {
-
   const AiDeeplinkTheme();
 
   static ColorScheme lightScheme() {
@@ -59,7 +57,7 @@ class AiDeeplinkTheme {
   }
 
   ThemeData light() {
-    return theme(lightScheme(), StatusColors.light);
+    return theme(lightScheme());
   }
 
   static ColorScheme lightMediumContrastScheme() {
@@ -114,7 +112,7 @@ class AiDeeplinkTheme {
   }
 
   ThemeData lightMediumContrast() {
-    return theme(lightMediumContrastScheme(), StatusColors.light);
+    return theme(lightMediumContrastScheme());
   }
 
   static ColorScheme lightHighContrastScheme() {
@@ -169,7 +167,7 @@ class AiDeeplinkTheme {
   }
 
   ThemeData lightHighContrast() {
-    return theme(lightHighContrastScheme(), StatusColors.light);
+    return theme(lightHighContrastScheme());
   }
 
   static ColorScheme darkScheme() {
@@ -224,7 +222,7 @@ class AiDeeplinkTheme {
   }
 
   ThemeData dark() {
-    return theme(darkScheme(), StatusColors.dark);
+    return theme(darkScheme());
   }
 
   static ColorScheme darkMediumContrastScheme() {
@@ -279,7 +277,7 @@ class AiDeeplinkTheme {
   }
 
   ThemeData darkMediumContrast() {
-    return theme(darkMediumContrastScheme(), StatusColors.dark);
+    return theme(darkMediumContrastScheme());
   }
 
   static ColorScheme darkHighContrastScheme() {
@@ -334,7 +332,7 @@ class AiDeeplinkTheme {
   }
 
   ThemeData darkHighContrast() {
-    return theme(darkHighContrastScheme(), StatusColors.dark);
+    return theme(darkHighContrastScheme());
   }
 
   NavigationBarThemeData get _navigationBarTheme => NavigationBarThemeData(
@@ -343,18 +341,16 @@ class AiDeeplinkTheme {
     ),
   );
 
-  ThemeData theme(ColorScheme colorScheme, StatusColors statusColors) =>
-      ThemeData(
-        useMaterial3: true,
-        brightness: colorScheme.brightness,
-        colorScheme: colorScheme,
-        scaffoldBackgroundColor: colorScheme.surface,
-        canvasColor: colorScheme.surface,
-        fontFamily: AiDeeplinkFont.googleSans,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        extensions: [statusColors],
-        navigationBarTheme: _navigationBarTheme,
-      );
+  ThemeData theme(ColorScheme colorScheme) => ThemeData(
+    useMaterial3: true,
+    brightness: colorScheme.brightness,
+    colorScheme: colorScheme,
+    scaffoldBackgroundColor: colorScheme.surface,
+    canvasColor: colorScheme.surface,
+    fontFamily: AiDeeplinkFont.googleSans,
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+    navigationBarTheme: _navigationBarTheme,
+  );
 
   List<ExtendedColor> get extendedColors => [];
 }

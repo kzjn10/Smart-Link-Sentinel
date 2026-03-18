@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../core/base/base_state.dart';
-import '../../../data/data_sources/local/app_database.dart';
+import '../../../domain/models/history_entity.dart';
 
 part 'history_state.freezed.dart';
 
@@ -9,7 +9,7 @@ part 'history_state.freezed.dart';
 abstract class HistoryState with _$HistoryState {
   const factory HistoryState({
     @Default(ViewState.initial) ViewState viewState,
-    @Default([]) List<HistoryEntry> history,
+    @Default([]) List<HistoryEntity> history,
     String? errorMessage,
   }) = _HistoryState;
 }

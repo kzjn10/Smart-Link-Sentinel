@@ -18,4 +18,6 @@ extension ContextExtensions on BuildContext {
   Color get errorColor => theme.colorScheme.error;
 
   Color get tertiaryFixedDimColor => theme.colorScheme.tertiaryFixedDim;
+
+  Color get secondaryContainer => theme.colorScheme.surfaceContainerLow;
 }

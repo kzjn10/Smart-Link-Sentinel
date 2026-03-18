@@ -41,7 +41,9 @@ dependencies:
 
   # Adaptive Theme
   adaptive_theme: ^3.7.2
-  bloc_concurrency: ^0.3.0
+
+  # URL Launcher
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

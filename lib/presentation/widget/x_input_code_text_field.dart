@@ -33,23 +33,27 @@ class _XDeeplinkTextFieldState extends State<XDeeplinkTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const .symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: Row(
-        spacing: 8,
-        crossAxisAlignment: .end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: TextField(
               controller: widget.inputCodeController,
-              autofocus: true,
+              autofocus: false,
               maxLines: 1,
-              style: context.textTheme.bodyLarge?.copyWith(fontWeight: .bold),
+              style: context.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
-                labelText: context.l10n?.common_hint_deeplink,
+                labelText: context.l10n?.common_label_yourLink,
                 counterText: '',
                 border: InputBorder.none,
                 hintText: widget.hintText,
+                hintStyle: context.textTheme.bodyLarge?.copyWith(
+                  color: context.primaryColor.withAlpha(128),
+                ),
               ),
             ),
           ),

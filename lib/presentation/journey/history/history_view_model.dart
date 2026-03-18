@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../core/base/base_state.dart';
 import '../../../core/base/base_view_model.dart';
-import '../../../data/data_sources/local/app_database.dart';
+import '../../../domain/models/history_entity.dart';
 import '../../../domain/repositories/history_repository.dart';
 import 'history_state.dart';
 
@@ -34,8 +34,8 @@ class HistoryViewModel extends BaseViewModel<HistoryState> {
     );
   }
 
-  void addHistory(String link) {
-    _historyRepository.addHistory(link);
+  Future<void> addOrUpdateHistory(String link) async {
+    unawaited(_historyRepository.addHistory(link));
   }
 
   void deleteHistory(String id) {
@@ -46,7 +46,7 @@ class HistoryViewModel extends BaseViewModel<HistoryState> {
     _historyRepository.clearHistory();
   }
 
-  void toggleFavorite(HistoryEntry entry) {
+  void toggleFavorite(HistoryEntity entry) {
     _historyRepository.toggleFavorite(entry);
   }
 
