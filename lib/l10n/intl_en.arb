@@ -12,6 +12,7 @@
   "common_text_settings": "Settings",
   "common_text_urlParts": "URL Parts",
   "common_text_queryString": "Query String",
+  "common_text_noHistory": "No history yet.",
   "common_message_failedToParseDeeplink": "Failed to parse the deeplink.",
   "common_message_couldNotLaunchDeepLink": "Could not launch the deep link.",
   "common_message_noAppFoundToHandleDeepLink": "No app found to handle the deep link.",

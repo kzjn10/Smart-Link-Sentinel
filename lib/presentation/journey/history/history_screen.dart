@@ -64,7 +64,9 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
 
           final historyList = state.history;
           if (historyList.isEmpty) {
-            return const Center(child: Text('No history yet.'));
+            return Center(
+              child: Text(context.l10n?.common_text_noHistory ?? ''),
+            );
           }
 
           return ListView.separated(

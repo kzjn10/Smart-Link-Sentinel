@@ -38,16 +38,16 @@ class HistoryViewModel extends BaseViewModel<HistoryState> {
     unawaited(_historyRepository.addHistory(link));
   }
 
-  void deleteHistory(String id) {
-    _historyRepository.deleteHistory(id);
+  Future<void> deleteHistory(String id) async {
+    unawaited(_historyRepository.deleteHistory(id));
   }
 
-  void clearHistory() {
-    _historyRepository.clearHistory();
+  Future<void> clearHistory() async {
+    unawaited(_historyRepository.clearHistory());
   }
 
-  void toggleFavorite(HistoryEntity entry) {
-    _historyRepository.toggleFavorite(entry);
+  Future<void> toggleFavorite(HistoryEntity entry) async {
+    unawaited(_historyRepository.toggleFavorite(entry));
   }
 
   @override
