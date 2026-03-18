@@ -1,4 +1,9 @@
 {
   "app_name": "AI Deeplink Tester",
+  "common_hint_deeplink": "Deeplink",
+  "common_tooltip_scanQrCode": "Scan QR Code",
+  "common_tooltip_paste": "Paste",
+  "common_tooltip_clear": "Clear",
+  "common_text_openDeeplink": "Open Deeplink",
   "end_content": "-- Please put this line at the end of file --"
 }

@@ -7,7 +7,7 @@ part 'history_dao.g.dart';
 
 @DriftAccessor(tables: [Historys])
 class HistoryDao extends DatabaseAccessor<AppDatabase> with _$HistoryDaoMixin {
-  HistoryDao(AppDatabase db) : super(db);
+  HistoryDao(super.db);
 
   Future<List<HistoryEntry>> getAllHistory() => select(historys).get();
 
@@ -19,4 +19,6 @@ class HistoryDao extends DatabaseAccessor<AppDatabase> with _$HistoryDaoMixin {
   Future<int> deleteHistory(String id) => (delete(historys)..where((t) => t.id.equals(id))).go();
 
   Future<int> clearHistory() => delete(historys).go();
+
+  Future<bool> updateHistory(HistoryEntry entry) => update(historys).replace(entry);
 }

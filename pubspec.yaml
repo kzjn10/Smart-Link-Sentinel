@@ -36,7 +36,12 @@ dependencies:
   drift_flutter: ^0.3.0
   sqlite3_flutter_libs: ^0.6.0+eol
 
+  # UUID
   uuid: ^4.4.2
+
+  # Adaptive Theme
+  adaptive_theme: ^3.7.2
+  bloc_concurrency: ^0.3.0
 
 dev_dependencies:
   flutter_test:

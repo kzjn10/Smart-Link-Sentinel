@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +8,9 @@ import '../theme/theme.dart';
 import 'router.dart';
 
 class AiDeeplinkApp extends StatefulWidget {
-  const AiDeeplinkApp({super.key});
+  const AiDeeplinkApp(this.savedThemeMode, {super.key});
+
+  final AdaptiveThemeMode? savedThemeMode;
 
   @override
   State<AiDeeplinkApp> createState() => _AiDeeplinkAppState();
@@ -24,19 +27,29 @@ class _AiDeeplinkAppState extends State<AiDeeplinkApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'AI Deeplink Tester',
-      theme: AiDeeplinkTheme().light(),
-      supportedLocales: AppLocalizations.supportedLocales,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      routeInformationParser: router.routeInformationParser,
-      routerDelegate: router.routerDelegate,
-      routeInformationProvider: router.routeInformationProvider,
+    final themeData = AiDeeplinkTheme();
+    return AdaptiveTheme(
+      light: themeData.light(),
+      dark: themeData.dark(),
+      initial: widget.savedThemeMode ?? AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) {
+        return MaterialApp.router(
+          title: 'AI Deeplink Tester',
+          theme: themeData.light(),
+          darkTheme: themeData.dark(),
+          themeMode: ThemeMode.light,
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          routeInformationParser: router.routeInformationParser,
+          routerDelegate: router.routerDelegate,
+          routeInformationProvider: router.routeInformationProvider,
+        );
+      },
     );
   }
 }

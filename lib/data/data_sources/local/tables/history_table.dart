@@ -5,6 +5,7 @@ class Historys extends Table {
   TextColumn get id => text()();
   TextColumn get link => text()();
   DateTimeColumn get updatedAt => dateTime()();
+  BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};

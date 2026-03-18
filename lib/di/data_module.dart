@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
-import '../data/datasources/local/app_database.dart';
-import '../data/datasources/local/daos/history_dao.dart';
+import '../data/data_sources/local/app_database.dart';
+import '../data/data_sources/local/daos/history_dao.dart';
 
 @module
 abstract class DataModule {
