@@ -12,3 +12,8 @@ Open source project for testing deeplinks.
 dart run build_runner build --delete-conflicting-outputs
 ```
 
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+👨‍💻 https://github.com/kzjn10

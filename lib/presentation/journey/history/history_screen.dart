@@ -42,8 +42,15 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
         title: Text(context.l10n?.common_text_history ?? ''),
         actions: [
           IconButton(
-            onPressed: () {
-              context.read<HistoryViewModel>().clearHistory();
+            onPressed: () async {
+              final viewModel = context.read<HistoryViewModel>();
+              final confirmed = await _showConfirmDialog(
+                title: context.l10n?.common_tooltip_clearAllHistory ?? '',
+                message: context.l10n?.common_message_confirmClearAllHistory ?? '',
+              );
+              if (confirmed && mounted) {
+                viewModel.clearHistory();
+              }
             },
             icon: Icon(Icons.clear_all),
             tooltip: context.l10n?.common_tooltip_clearAllHistory,
@@ -83,6 +90,16 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
                 onCopyLink: (link) {
                   unawaited(_copyLinkToClipboard(link));
                 },
+                onDelete: () async {
+                  final viewModel = context.read<HistoryViewModel>();
+                  final confirmed = await _showConfirmDialog(
+                    title: context.l10n?.common_text_history ?? '',
+                    message: context.l10n?.common_message_confirmDeleteHistory ?? '',
+                  );
+                  if (confirmed && mounted) {
+                    viewModel.deleteHistory(historyList[index].id);
+                  }
+                },
               );
             },
           );
@@ -113,6 +130,32 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
       showSnackBar(context, context.l10n?.common_message_copiedToClipboard);
     }
   }
+
+  Future<bool> _showConfirmDialog({
+    required String title,
+    required String message,
+  }) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(title),
+              content: Text(message),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text(context.l10n?.common_text_cancel ?? 'Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text(context.l10n?.common_text_confirm ?? 'Confirm'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -123,11 +166,13 @@ class _HistoryRow extends StatelessWidget {
     required this.history,
     required this.onOpenLink,
     required this.onCopyLink,
+    required this.onDelete,
   });
 
   final HistoryEntity history;
   final Function(String) onOpenLink;
   final Function(String) onCopyLink;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -177,20 +222,18 @@ class _HistoryRow extends StatelessWidget {
                         : Icons.star_outline_sharp,
                     color: history.isFavorite
                         ? context.primaryColor
-                        : Colors.black87,
+                        : null,
                   ),
                   onPressed: () {
                     context.read<HistoryViewModel>().toggleFavorite(history);
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete_outline, color: Colors.black87),
-                  onPressed: () {
-                    context.read<HistoryViewModel>().deleteHistory(history.id);
-                  },
+                  icon: Icon(Icons.delete_outline),
+                  onPressed: onDelete,
                 ),
                 IconButton(
-                  icon: Icon(Icons.copy, color: Colors.black87),
+                  icon: Icon(Icons.copy),
                   onPressed: () {
                     onCopyLink(history.link);
                   },

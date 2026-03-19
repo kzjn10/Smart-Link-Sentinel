@@ -45,6 +45,16 @@ dependencies:
   # URL Launcher
   url_launcher: ^6.3.2
 
+  # Mobile Scanner
+  mobile_scanner: ^7.2.0
+
+  # Shared preferences
+  shared_preferences: ^2.5.2
+
+  # Package info
+  package_info_plus: ^9.0.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

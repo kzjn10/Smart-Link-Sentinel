@@ -1,11 +1,15 @@
 {
   "app_name": "AI Deeplink Tester",
   "common_label_yourLink": "Enter your link",
+  "common_label_geminiApiKey": "Enter Gemini API Key",
+
   "common_hint_deeplink": "myDeepLink://",
+
   "common_tooltip_scanQrCode": "Scan QR Code",
   "common_tooltip_paste": "Paste",
   "common_tooltip_clear": "Clear",
   "common_tooltip_clearAllHistory": "Clear All History",
+
   "common_text_openDeeplink": "Open Deeplink",
   "common_text_resourceIdentifiers": "Resource Identifiers",
   "common_text_history": "History",
@@ -13,9 +17,32 @@
   "common_text_urlParts": "URL Parts",
   "common_text_queryString": "Query String",
   "common_text_noHistory": "No history yet.",
+  "common_text_confirm": "Confirm",
+  "common_text_cancel": "Cancel",
+  "common_text_scanQrCode": "Point your camera at a QR code to scan.",
+  "common_text_scanQrCodeTitle": "Scan QR Code",
+
   "common_message_failedToParseDeeplink": "Failed to parse the deeplink.",
   "common_message_couldNotLaunchDeepLink": "Could not launch the deep link.",
   "common_message_noAppFoundToHandleDeepLink": "No app found to handle the deep link.",
   "common_message_copiedToClipboard": "Copied to clipboard.",
+  "common_message_confirmDeleteHistory": "Are you sure you want to delete this history item?",
+  "common_message_confirmClearAllHistory": "Are you sure you want to clear all history?",
+  "common_message_phanes": "© 2026 Phanes Team.",
+  "common_message_appInfo": "AI Deeplink Tester is open-source software licensed under the MIT License. You can find the source code, contribute, or reuse it on GitHub.",
+
+  "settings_ai_key": "Gemini API Key",
+  "settings_theme": "Theme",
+  "settings_language": "Language",
+  "settings_about": "About",
+  "settings_hint_ai_key": "Enter your Gemini API Key",
+  "settings_save": "Save",
+  "settings_api_key_saved": "API Key saved successfully",
+  "settings_language_en": "English",
+  "settings_language_vi": "Tiếng Việt",
+  "settings_text_dark_mode": "Dark Mode",
+  "settings_text_light_mode": "Light Mode",
+
+
   "end_content": "-- Please put this line at the end of file --"
 }

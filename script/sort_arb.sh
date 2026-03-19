@@ -1,0 +1,1 @@
+dart run script/sort_arb.dart

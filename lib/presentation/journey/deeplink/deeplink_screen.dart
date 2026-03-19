@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/base/base_state.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../di/injection.dart';
 import '../../../extensions/context_extensions.dart';
-import '../../widget/x_input_code_text_field.dart';
+import '../../widget/x_bottom_sheet_content.dart';
+import '../../widget/x_input_link_text_field.dart';
 import '../../widget/x_state_widget.dart';
 import 'deeplink_state.dart';
 import 'deeplink_view_model.dart';
@@ -31,23 +33,21 @@ class _DeeplinkScreenView extends StatefulWidget {
 }
 
 class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
-  final TextEditingController _deeplinkController = TextEditingController();
+  final TextEditingController _linkController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _deeplinkController.addListener(() {
+    _linkController.addListener(() {
       if (mounted) {
-        context.read<DeeplinkViewModel>().onLinkChanged(
-          _deeplinkController.text,
-        );
+        context.read<DeeplinkViewModel>().onLinkChanged(_linkController.text);
       }
     });
   }
 
   @override
   void dispose() {
-    _deeplinkController.dispose();
+    _linkController.dispose();
     super.dispose();
   }
 
@@ -69,18 +69,25 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: XDeeplinkTextField(
-                inputCodeController: _deeplinkController,
+                inputCodeController: _linkController,
                 hintText: context.l10n?.common_hint_deeplink,
+                onScan: _scanQrCode,
               ),
             ),
-            FilledButton(
-              onPressed: () async {
-                context.read<DeeplinkViewModel>().addOrUpdateHistory(
-                  _deeplinkController.text,
+            BlocBuilder<DeeplinkViewModel, DeeplinkState>(
+              builder: (context, state) {
+                return FilledButton(
+                  onPressed: state.resourceIdentifier.isEmpty
+                      ? null
+                      : () async {
+                          context.read<DeeplinkViewModel>().addOrUpdateHistory(
+                            _linkController.text,
+                          );
+                          await _launchUrl(_linkController.text);
+                        },
+                  child: Text(context.l10n?.common_text_openDeeplink ?? ''),
                 );
-                await _launchUrl(_deeplinkController.text);
               },
-              child: Text(context.l10n?.common_text_openDeeplink ?? ''),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -157,6 +164,69 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
       }
     }
   }
+
+  Future<void> _scanQrCode() async {
+    await showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: .vertical(top: .circular(20)),
+      ),
+      builder: (_) => _buildScanQrCodeBottomSheetContent(context),
+    );
+  }
+
+  Widget _buildScanQrCodeBottomSheetContent(BuildContext sheetContext) {
+    final mobileScannerController = MobileScannerController();
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: XBottomSheetContent(
+        padding: EdgeInsets.zero,
+        height: context.deviceHeight * 0.5,
+        title: context.l10n?.common_text_scanQrCodeTitle,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 200,
+                width: 300,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: MobileScanner(
+                    controller: mobileScannerController,
+                    onDetect: (capture) {
+                      final barcode = capture.barcodes.firstOrNull;
+                      final value = barcode?.rawValue;
+                      if (value != null && value.isNotEmpty) {
+                        _linkController.text = value;
+                        mobileScannerController.dispose();
+                        Navigator.pop(sheetContext);
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(context.l10n?.common_text_scanQrCode ?? ''),
+              const SizedBox(height: 20),
+              FilledButton(
+                onPressed: () {
+                  mobileScannerController.dispose();
+                  Navigator.pop(sheetContext);
+                },
+                child: Text(context.l10n?.common_text_cancel ?? ''),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -209,7 +279,9 @@ class _ElementRow extends StatelessWidget {
             flex: 3,
             child: Text(
               label,
-              style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: context.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Expanded(
