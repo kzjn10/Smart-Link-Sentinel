@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'assistant/assistant_screen.dart';
 import 'deeplink/deeplink_screen.dart';
 import 'history/history_screen.dart';
 import 'home/home_screen.dart';
@@ -10,6 +11,7 @@ import 'settings/settings_screen.dart';
 
 const String deeplinkRoute = '/deeplink';
 const String historyRoute = '/history';
+const String assistantRoute = '/assistantRoute';
 const String settingsRoute = '/settings';
 
 class AiDeeplinkRouter {
@@ -38,6 +40,14 @@ class AiDeeplinkRouter {
                 GoRoute(
                   path: historyRoute,
                   builder: (context, state) => const HistoryScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: assistantRoute,
+                  builder: (context, state) => const AssistantScreen(),
                 ),
               ],
             ),

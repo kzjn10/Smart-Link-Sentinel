@@ -44,7 +44,6 @@ class SettingsViewModel extends BaseViewModel<SettingsState> {
   Future<void> changeLanguage(String? langCode) async {
     await _settingsRepository.saveLanguageCode(langCode);
     emit(state.copyWith(languageCode: langCode));
-    // Global locale change will be handled by AiDeeplinkApp listening to a state or just rebuilding
   }
 }
 

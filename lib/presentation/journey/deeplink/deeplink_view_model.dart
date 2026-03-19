@@ -4,18 +4,20 @@ import 'package:injectable/injectable.dart';
 
 import '../../../core/base/base_view_model.dart';
 import '../../../core/utils/app_logger.dart';
-import '../../../domain/repositories/history_repository.dart';
+import '../../../domain/usecases/analyze_link_usecase.dart';
 import 'deeplink_state.dart';
 
 @injectable
 class DeeplinkViewModel extends BaseViewModel<DeeplinkState> {
-  final HistoryRepository _historyRepository;
+  final AnalyzeLinkUseCase _analyzeLinkUseCase;
   Timer? _debounce;
 
-  DeeplinkViewModel(this._historyRepository) : super(const DeeplinkState());
+  DeeplinkViewModel(
+    this._analyzeLinkUseCase,
+  ) : super(const DeeplinkState());
 
   Future<void> addOrUpdateHistory(String link) async {
-    unawaited(_historyRepository.addHistory(link));
+    unawaited(_analyzeLinkUseCase.execute(link));
   }
 
   Future<void> onLinkChanged(String link) async {

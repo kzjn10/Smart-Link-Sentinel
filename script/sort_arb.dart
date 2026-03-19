@@ -52,8 +52,8 @@ Map<String, dynamic> _sortArb(Map<String, dynamic> input) {
   }
 
   int specialRank(String key) {
-    if (key == 'app_name' || key == 'appName') return -100;
-    if (key == 'end_content') return 100;
+    if (key == 'app_name' || key == 'appName') return -1000;
+    if (key == 'end_content') return 1000;
     return 0;
   }
 

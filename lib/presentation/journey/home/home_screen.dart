@@ -32,6 +32,11 @@ class HomeScreen extends StatelessWidget {
             label: context.l10n?.common_text_history ?? '',
           ),
           NavigationDestination(
+            icon: Icon(Icons.assistant_rounded),
+            selectedIcon: Icon(Icons.assistant_rounded),
+            label: context.l10n?.common_text_assistant ?? '',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.settings),
             selectedIcon: Icon(Icons.settings),
             label: context.l10n?.common_text_settings ?? '',
