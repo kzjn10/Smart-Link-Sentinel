@@ -46,7 +46,8 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
               final viewModel = context.read<HistoryViewModel>();
               final confirmed = await _showConfirmDialog(
                 title: context.l10n?.common_tooltip_clearAllHistory ?? '',
-                message: context.l10n?.common_message_confirmClearAllHistory ?? '',
+                message:
+                    context.l10n?.common_message_confirmClearAllHistory ?? '',
               );
               if (confirmed && mounted) {
                 viewModel.clearHistory();
@@ -58,6 +59,10 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
         ],
       ),
       body: BlocBuilder<HistoryViewModel, HistoryState>(
+        buildWhen: (previous, current) =>
+            previous.viewState != current.viewState ||
+            previous.history != current.history ||
+            previous.errorMessage != current.errorMessage,
         builder: (context, state) {
           if (state.viewState == ViewState.loading) {
             return const Center(child: CircularProgressIndicator());
@@ -94,7 +99,8 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
                   final viewModel = context.read<HistoryViewModel>();
                   final confirmed = await _showConfirmDialog(
                     title: context.l10n?.common_text_history ?? '',
-                    message: context.l10n?.common_message_confirmDeleteHistory ?? '',
+                    message:
+                        context.l10n?.common_message_confirmDeleteHistory ?? '',
                   );
                   if (confirmed && mounted) {
                     viewModel.deleteHistory(historyList[index].id);
@@ -176,22 +182,23 @@ class _HistoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular(12);
     return Material(
-      borderRadius: BorderRadius.circular(12),
-      color: context.secondaryContainer,
+      borderRadius: borderRadius,
+      color: context.surfaceContainerLowColor,
       elevation: 0,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: context.primaryColor.withAlpha(20)),
+          borderRadius: borderRadius,
+          border: .all(color: context.primaryColor.withAlpha(20)),
         ),
         child: InkWell(
           onTap: () async {
             onOpenLink(history.link);
           },
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: borderRadius,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
+            padding: const .symmetric(vertical: 24.0, horizontal: 16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -220,9 +227,7 @@ class _HistoryRow extends StatelessWidget {
                     history.isFavorite
                         ? Icons.stars_sharp
                         : Icons.star_outline_sharp,
-                    color: history.isFavorite
-                        ? context.primaryColor
-                        : null,
+                    color: history.isFavorite ? context.primaryColor : null,
                   ),
                   onPressed: () {
                     context.read<HistoryViewModel>().toggleFavorite(history);
@@ -233,7 +238,7 @@ class _HistoryRow extends StatelessWidget {
                   onPressed: onDelete,
                 ),
                 IconButton(
-                  icon: Icon(Icons.copy),
+                  icon: Icon(Icons.copy, size: 20),
                   onPressed: () {
                     onCopyLink(history.link);
                   },

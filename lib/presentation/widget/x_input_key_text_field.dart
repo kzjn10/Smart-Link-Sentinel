@@ -26,6 +26,7 @@ class _XInputKeyTextFieldState extends State<XInputKeyTextField> {
 
   @override
   void initState() {
+    _onClearValueNotifier.value = widget.controller.text.isNotEmpty;
     widget.controller.addListener(() {
       _onClearValueNotifier.value = widget.controller.text.isNotEmpty;
     });
@@ -65,6 +66,22 @@ class _XInputKeyTextFieldState extends State<XInputKeyTextField> {
             onPressed: _pasteText,
             tooltip: context.l10n?.common_tooltip_paste,
             visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          AnimatedBuilder(
+            animation: _onClearValueNotifier,
+            builder: (_, _) {
+              return IconButton(
+                icon: const Icon(Icons.cancel),
+                onPressed: _onClearValueNotifier.value
+                    ? () {
+                        widget.controller.clear();
+                        _onClearValueNotifier.value = false;
+                      }
+                    : null,
+                tooltip: context.l10n?.common_tooltip_clear,
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+              );
+            },
           ),
         ],
       ),

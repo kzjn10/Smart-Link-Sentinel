@@ -28,12 +28,6 @@ class XBottomSheetContent extends StatelessWidget {
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
         ),
-        border: Border(
-          top: BorderSide(
-            width: 0.5,
-            color: context.primaryColor.withAlpha(100),
-          ),
-        ),
       ),
       child: Column(
         mainAxisSize: .min,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../extensions/context_extensions.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.navigationShell});
 
@@ -18,21 +20,21 @@ class HomeScreen extends StatelessWidget {
             initialLocation: index == navigationShell.currentIndex,
           );
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
             icon: Icon(Icons.link),
             selectedIcon: Icon(Icons.link_sharp),
-            label: 'Deeplink',
+            label: context.l10n?.common_text_resourceIdentifiers ?? '',
           ),
           NavigationDestination(
             icon: Icon(Icons.history),
             selectedIcon: Icon(Icons.history_rounded),
-            label: 'History',
+            label: context.l10n?.common_text_history ?? '',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings),
             selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
+            label: context.l10n?.common_text_settings ?? '',
           ),
         ],
       ),

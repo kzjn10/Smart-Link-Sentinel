@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../di/injection.dart';
 import '../../../extensions/context_extensions.dart';
@@ -10,8 +12,9 @@ import '../../shared_cubit/locale_cubit.dart';
 import '../../widget/x_bottom_sheet_content.dart';
 import '../../widget/x_input_key_text_field.dart';
 import '../../widget/x_state_widget.dart';
-import 'settings_state.dart';
 import 'settings_view_model.dart';
+
+const String _geminiApiKeyUrl = 'https://aistudio.google.com/api-keys';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -43,75 +46,95 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
 
   @override
   Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular(12);
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n?.common_text_settings ?? '')),
-      body: BlocBuilder<SettingsViewModel, SettingsState>(
-        builder: (context, state) {
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            child: Material(
-              elevation: 0,
-              borderRadius: .circular(12),
-              color: context.secondaryContainer,
-              clipBehavior: .antiAlias,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: context.primaryColor.withAlpha(20)),
+      body: SingleChildScrollView(
+        padding: const .symmetric(vertical: 24.0, horizontal: 16),
+        child: Material(
+          elevation: 0,
+          borderRadius: borderRadius,
+          color: context.surfaceContainerLowColor,
+          clipBehavior: Clip.antiAlias,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              border: Border.all(color: context.primaryColor.withAlpha(20)),
+            ),
+            child: Column(
+              children: [
+                _buildMenuItem(
+                  context,
+                  title: context.l10n?.settings_ai_key ?? '',
+                  subtitle:
+                      context.select(
+                        (SettingsViewModel viewModel) =>
+                            viewModel.state.geminiApiKey?.isNotEmpty == true,
+                      )
+                      ? '••••••••'
+                      : context.l10n?.settings_hint_ai_key,
+                  icon: Icons.key,
+                  onTap: () {
+                    final geminiApiKey = context
+                        .read<SettingsViewModel>()
+                        .state
+                        .geminiApiKey;
+                    _showApiKeyBottomSheet(context, geminiApiKey);
+                  },
                 ),
-                child: Column(
-                  children: [
-                    _buildMenuItem(
-                      context,
-                      title: context.l10n?.settings_ai_key ?? 'Gemini API Key',
-                      subtitle: state.geminiApiKey?.isNotEmpty == true
-                          ? '••••••••'
-                          : context.l10n?.settings_hint_ai_key,
-                      icon: Icons.key,
-                      onTap: () =>
-                          _showApiKeyBottomSheet(context, state.geminiApiKey),
-                    ),
-                    SwitchListTile(
-                      title: Text(context.l10n?.settings_theme ?? 'Theme'),
+                Builder(
+                  builder: (context) {
+                    final isDarkMode = context.select(
+                      (SettingsViewModel viewModel) =>
+                          viewModel.state.isDarkMode,
+                    );
+                    return SwitchListTile(
+                      title: Text(context.l10n?.settings_theme ?? ''),
                       subtitle: Text(
-                        state.isDarkMode
-                            ? (context.l10n?.settings_text_dark_mode ??
-                                  'Dark Mode')
-                            : (context.l10n?.settings_text_light_mode ??
-                                  'Light Mode'),
+                        isDarkMode
+                            ? (context.l10n?.settings_text_darkMode ?? '')
+                            : (context.l10n?.settings_text_lightMode ?? ''),
                       ),
                       secondary: Icon(
-                        state.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                        isDarkMode ? Icons.dark_mode : Icons.light_mode,
                       ),
-                      value: state.isDarkMode,
+                      value: isDarkMode,
                       onChanged: (value) {
                         context.read<SettingsViewModel>().toggleTheme(context);
                       },
-                    ),
-                    _buildMenuItem(
+                    );
+                  },
+                ),
+                Builder(
+                  builder: (context) {
+                    final languageCode = context.select(
+                      (SettingsViewModel viewModel) =>
+                          viewModel.state.languageCode,
+                    );
+                    return _buildMenuItem(
                       context,
                       title: context.l10n?.settings_language,
-                      subtitle: state.languageCode == 'vi'
-                          ? (context.l10n?.settings_language_vi ?? 'Tiếng Việt')
-                          : (context.l10n?.settings_language_en ?? 'English'),
+                      subtitle: languageCode == 'vi'
+                          ? (context.l10n?.settings_language_vi ?? '')
+                          : (context.l10n?.settings_language_en ?? ''),
                       icon: Icons.language,
                       onTap: () =>
-                          _showLanguageBottomSheet(context, state.languageCode),
-                    ),
-                    _buildMenuItem(
-                      context,
-                      title: context.l10n?.settings_about,
-                      icon: Icons.info_outline,
-                      onTap: () async {
-                        _showAboutDialog(context);
-                      },
-                    ),
-                  ],
+                          _showLanguageBottomSheet(context, languageCode),
+                    );
+                  },
                 ),
-              ),
+                _buildMenuItem(
+                  context,
+                  title: context.l10n?.settings_about,
+                  icon: Icons.info_outline,
+                  onTap: () async {
+                    _showAboutDialog(context);
+                  },
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -149,22 +172,18 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
   Widget _buildApiKeyBottomSheetContent(BuildContext sheetContext) {
     return XBottomSheetContent(
       padding: EdgeInsets.zero,
-      height: context.deviceHeight * 0.3,
       title: context.l10n?.settings_ai_key,
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 24,
-        ),
+        padding: .symmetric(horizontal: 16, vertical: 24),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: .min,
+          crossAxisAlignment: .stretch,
           children: [
             const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
                 color: context.tertiaryFixedDimColor.withAlpha(100),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: .circular(12),
               ),
               child: XInputKeyTextField(
                 controller: _apiKeyController,
@@ -172,6 +191,43 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                 hintText: context.l10n?.settings_hint_ai_key,
                 obscureText: true,
               ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              spacing: 4,
+              children: [
+                Icon(Icons.info_sharp, color: context.tertiaryFixedDimColor),
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: context.l10n?.settings_text_tapHere,
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            color: context.primaryColor.withAlpha(200),
+                            fontWeight: .bold,
+                            decoration: .underline,
+                            decorationColor: context.primaryColor.withAlpha(
+                              200,
+                            ),
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _launchURL(_geminiApiKeyUrl);
+                            },
+                        ),
+                        TextSpan(
+                          text: context.l10n?.settings_text_getGeminiApiKey,
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            color: context.primaryColor.withAlpha(200),
+                            fontWeight: .bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 24),
             FilledButton(
@@ -266,6 +322,13 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
         //   height: 64,
         // ),
       );
+    }
+  }
+
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw 'Could not launch $url';
     }
   }
 }

@@ -75,14 +75,17 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
               ),
             ),
             BlocBuilder<DeeplinkViewModel, DeeplinkState>(
+              buildWhen: (previous, current) =>
+                  previous.resourceIdentifier.isEmpty !=
+                  current.resourceIdentifier.isEmpty,
               builder: (context, state) {
                 return FilledButton(
                   onPressed: state.resourceIdentifier.isEmpty
                       ? null
                       : () async {
                           context.read<DeeplinkViewModel>().addOrUpdateHistory(
-                            _linkController.text,
-                          );
+                                _linkController.text,
+                              );
                           await _launchUrl(_linkController.text);
                         },
                   child: Text(context.l10n?.common_text_openDeeplink ?? ''),
@@ -102,9 +105,15 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
                       );
                     }
                   },
+                  buildWhen: (previous, current) =>
+                      previous.viewState != current.viewState ||
+                      previous.resourceIdentifier !=
+                          current.resourceIdentifier ||
+                      previous.parsedData != current.parsedData ||
+                      previous.queryParameters != current.queryParameters,
                   builder: (context, state) {
                     if (state.resourceIdentifier.isEmpty) {
-                      return SizedBox.shrink();
+                      return const SizedBox.shrink();
                     }
                     if (state.viewState == ViewState.loading) {
                       return const Center(child: CircularProgressIndicator());

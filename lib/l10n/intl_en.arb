@@ -1,7 +1,7 @@
 {
   "app_name": "AI Deeplink Tester",
   "common_label_yourLink": "Enter your link",
-  "common_label_geminiApiKey": "Enter Gemini API Key",
+  "common_label_geminiApiKey": "Gemini API Key",
 
   "common_hint_deeplink": "myDeepLink://",
 
@@ -10,8 +10,8 @@
   "common_tooltip_clear": "Clear",
   "common_tooltip_clearAllHistory": "Clear All History",
 
-  "common_text_openDeeplink": "Open Deeplink",
-  "common_text_resourceIdentifiers": "Resource Identifiers",
+  "common_text_openDeeplink": "Open Link",
+  "common_text_resourceIdentifiers": "Link",
   "common_text_history": "History",
   "common_text_settings": "Settings",
   "common_text_urlParts": "URL Parts",
@@ -40,8 +40,10 @@
   "settings_api_key_saved": "API Key saved successfully",
   "settings_language_en": "English",
   "settings_language_vi": "Tiếng Việt",
-  "settings_text_dark_mode": "Dark Mode",
-  "settings_text_light_mode": "Light Mode",
+  "settings_text_darkMode": "Dark Mode",
+  "settings_text_lightMode": "Light Mode",
+  "settings_text_tapHere": "Tap here",
+  "settings_text_getGeminiApiKey": " to get Gemini API Key ",
 
 
   "end_content": "-- Please put this line at the end of file --"
