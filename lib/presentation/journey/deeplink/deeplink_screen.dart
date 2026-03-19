@@ -56,6 +56,14 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n?.common_text_resourceIdentifiers ?? ''),
+        actions: [
+          IconButton(
+            onPressed: () {
+              _scanQrCode();
+            },
+            icon: Icon(Icons.qr_code_scanner),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -71,7 +79,6 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
               child: XDeeplinkTextField(
                 inputCodeController: _linkController,
                 hintText: context.l10n?.common_hint_deeplink,
-                onScan: _scanQrCode,
               ),
             ),
             BlocBuilder<DeeplinkViewModel, DeeplinkState>(
@@ -84,8 +91,8 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
                       ? null
                       : () async {
                           context.read<DeeplinkViewModel>().addOrUpdateHistory(
-                                _linkController.text,
-                              );
+                            _linkController.text,
+                          );
                           await _launchUrl(_linkController.text);
                         },
                   child: Text(context.l10n?.common_text_openDeeplink ?? ''),

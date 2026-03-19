@@ -3,21 +3,23 @@ import 'package:flutter/services.dart';
 
 import '../../extensions/context_extensions.dart';
 
-class XDeeplinkTextField extends StatefulWidget {
-  const XDeeplinkTextField({
+class XAssistantTextField extends StatefulWidget {
+  const XAssistantTextField({
     super.key,
+    required this.onSend,
     required this.inputCodeController,
     this.hintText,
   });
 
   final TextEditingController inputCodeController;
+  final VoidCallback onSend;
   final String? hintText;
 
   @override
-  State<XDeeplinkTextField> createState() => _XDeeplinkTextFieldState();
+  State<XAssistantTextField> createState() => _XAssistantTextFieldState();
 }
 
-class _XDeeplinkTextFieldState extends State<XDeeplinkTextField> {
+class _XAssistantTextFieldState extends State<XAssistantTextField> {
   final _onClearValueNotifier = ValueNotifier(false);
 
   @override
@@ -65,11 +67,12 @@ class _XDeeplinkTextFieldState extends State<XDeeplinkTextField> {
             animation: _onClearValueNotifier,
             builder: (_, _) {
               return IconButton(
-                icon: const Icon(Icons.cancel),
+                icon: const Icon(Icons.send),
                 onPressed: _onClearValueNotifier.value
                     ? () {
                         widget.inputCodeController.clear();
                         _onClearValueNotifier.value = false;
+                        widget.onSend.call();
                       }
                     : null,
                 tooltip: context.l10n?.common_tooltip_clear,
