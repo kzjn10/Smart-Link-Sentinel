@@ -81,13 +81,13 @@ class _AssistantScreenViewState extends XStateWidget<_AssistantScreenView> {
             ],
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const .symmetric(horizontal: 16, vertical: 12),
             child: Column(
               children: [
                 Container(
                   decoration: BoxDecoration(
                     color: context.tertiaryFixedDimColor.withAlpha(100),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: .circular(12),
                   ),
                   child: XAssistantTextField(
                     inputCodeController: _controller,
@@ -185,7 +185,7 @@ class _AssistantResultCard extends StatelessWidget {
       padding: const .symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
         borderRadius: .circular(12),
-        border: Border.all(color: context.primaryColor.withAlpha(100)),
+        border: .all(color: context.primaryColor.withAlpha(100)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

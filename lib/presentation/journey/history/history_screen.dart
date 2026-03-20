@@ -267,8 +267,8 @@ class _HistoryRow extends StatelessWidget {
             icon: Icons.qr_code_rounded,
             label: context.l10n?.common_text_qrCode,
             borderRadius: .only(
-              topLeft: Radius.circular(12),
-              bottomLeft: Radius.circular(12),
+              topLeft: .circular(12),
+              bottomLeft: .circular(12),
             ),
           ),
           SlidableAction(
@@ -280,8 +280,8 @@ class _HistoryRow extends StatelessWidget {
             icon: Icons.delete_outline,
             label: context.l10n?.common_text_delete,
             borderRadius: .only(
-              topRight: Radius.circular(12),
-              bottomRight: Radius.circular(12),
+              topRight: .circular(12),
+              bottomRight: .circular(12),
             ),
           ),
         ],
