@@ -26,6 +26,7 @@ extension ContextExtensions on BuildContext {
   Color get tertiaryFixedDimColor => theme.colorScheme.tertiaryFixedDim;
 
   Color get surfaceContainerLowColor => theme.colorScheme.surfaceContainerLow;
+  Color get surfaceContainerColor => theme.colorScheme.surfaceContainer;
 
   // ─────────────────────────────────────────────
   // Size

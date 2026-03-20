@@ -60,6 +60,12 @@ dependencies:
   # Shimmer
   shimmer: ^3.0.0
 
+  # Slidable
+  flutter_slidable: ^4.0.3
+
+  # QR Code
+  pretty_qr_code: ^3.6.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

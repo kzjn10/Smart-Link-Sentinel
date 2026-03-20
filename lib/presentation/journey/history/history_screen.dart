@@ -3,15 +3,17 @@ import 'dart:async';
 import 'package:ai_deeplink_tester/core/base/base_state.dart';
 import 'package:ai_deeplink_tester/domain/models/history_entity.dart';
 import 'package:ai_deeplink_tester/extensions/context_extensions.dart';
-import 'package:ai_deeplink_tester/presentation/widget/x_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/utils/app_logger.dart';
 import '../../../di/injection.dart';
 import '../../../extensions/datetime_extension.dart';
+import '../../widget/widget.dart';
 import 'history_state.dart';
 import 'history_view_model.dart';
 
@@ -92,8 +94,11 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
                   context.read<HistoryViewModel>().addOrUpdateHistory(link);
                   unawaited(_launchUrl(link));
                 },
-                onCopyLink: (link) {
+                onCopyLink: (link) async {
                   unawaited(_copyLinkToClipboard(link));
+                },
+                onGenQrCode: (link) async {
+                  unawaited(_genQrCode(context, link: link));
                 },
                 onDelete: () async {
                   final viewModel = context.read<HistoryViewModel>();
@@ -150,17 +155,68 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: Text(context.l10n?.common_text_cancel ?? 'Cancel'),
+                  child: Text(context.l10n?.common_text_cancel ?? ''),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context, true),
-                  child: Text(context.l10n?.common_text_confirm ?? 'Confirm'),
+                  child: Text(context.l10n?.common_text_confirm ?? ''),
                 ),
               ],
             );
           },
         ) ??
         false;
+  }
+
+  Future<void> _genQrCode(BuildContext context, {required String link}) async {
+    await showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: .vertical(top: .circular(20)),
+      ),
+      builder: (sheetContext) {
+        return XBottomSheetContent(
+          padding: EdgeInsets.zero,
+          title: context.l10n?.common_text_qrCode,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                SizedBox.square(
+                  dimension: 150,
+                  child: PrettyQrView.data(
+                    data: link,
+                    errorCorrectLevel: QrErrorCorrectLevel.H,
+                    decoration: PrettyQrDecoration(
+                      shape: PrettyQrSmoothSymbol(color: context.tertiaryColor),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  context.l10n?.common_text_scanQrCode ?? '',
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: context.tertiaryColor.withValues(alpha: 0.6),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: () {
+                    Navigator.pop(sheetContext);
+                  },
+                  child: Text(context.l10n?.common_text_close ?? ''),
+                ),
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -172,78 +228,112 @@ class _HistoryRow extends StatelessWidget {
     required this.history,
     required this.onOpenLink,
     required this.onCopyLink,
+    required this.onGenQrCode,
     required this.onDelete,
   });
 
   final HistoryEntity history;
   final Function(String) onOpenLink;
   final Function(String) onCopyLink;
+  final Function(String) onGenQrCode;
   final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(12);
-    return Material(
-      borderRadius: borderRadius,
-      color: context.surfaceContainerLowColor,
-      elevation: 0,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          border: .all(color: context.primaryColor.withAlpha(20)),
-        ),
-        child: InkWell(
-          onTap: () async {
-            onOpenLink(history.link);
-          },
-          borderRadius: borderRadius,
-          child: Padding(
-            padding: const .symmetric(vertical: 24.0, horizontal: 16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        history.link,
-                        style: context.textTheme.titleMedium,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        history.updatedAt.formatDateTime(),
-                        style: context.textTheme.labelSmall,
-                      ),
-                    ],
+    return Slidable(
+      key: ValueKey(history.hashCode),
+      endActionPane: ActionPane(
+        motion: DrawerMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (context) {
+              onGenQrCode(history.link);
+            },
+            backgroundColor: context.tertiaryColor,
+            foregroundColor: context.surfaceContainerColor,
+            icon: Icons.qr_code_rounded,
+            label: context.l10n?.common_text_qrCode,
+            borderRadius: .only(
+              topLeft: Radius.circular(12),
+              bottomLeft: Radius.circular(12),
+            ),
+          ),
+          SlidableAction(
+            onPressed: (context) {
+              onDelete();
+            },
+            backgroundColor: context.errorColor,
+            foregroundColor: context.surfaceContainerColor,
+            icon: Icons.delete_outline,
+            label: context.l10n?.common_text_delete,
+            borderRadius: .only(
+              topRight: Radius.circular(12),
+              bottomRight: Radius.circular(12),
+            ),
+          ),
+        ],
+      ),
+      child: Material(
+        borderRadius: borderRadius,
+        color: context.surfaceContainerLowColor,
+        elevation: 0,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            border: .all(color: context.primaryColor.withAlpha(20)),
+          ),
+          child: InkWell(
+            onTap: () async {
+              onOpenLink(history.link);
+            },
+            borderRadius: borderRadius,
+            child: Padding(
+              padding: const .symmetric(vertical: 24.0, horizontal: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          history.link,
+                          style: context.textTheme.titleMedium,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          history.updatedAt.formatDateTime(),
+                          style: context.textTheme.labelSmall?.copyWith(
+                            color: context.tertiaryColor.withValues(alpha: 0.6),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    history.isFavorite
-                        ? Icons.stars_sharp
-                        : Icons.star_outline_sharp,
-                    color: history.isFavorite ? context.primaryColor : null,
+                  IconButton(
+                    icon: Icon(
+                      history.isFavorite
+                          ? Icons.stars_sharp
+                          : Icons.star_outline_sharp,
+                      color: history.isFavorite ? context.primaryColor : null,
+                    ),
+                    onPressed: () {
+                      context.read<HistoryViewModel>().toggleFavorite(history);
+                    },
                   ),
-                  onPressed: () {
-                    context.read<HistoryViewModel>().toggleFavorite(history);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete_outline),
-                  onPressed: onDelete,
-                ),
-                IconButton(
-                  icon: Icon(Icons.copy, size: 20),
-                  onPressed: () {
-                    onCopyLink(history.link);
-                  },
-                ),
-              ],
+                  IconButton(
+                    icon: Icon(Icons.copy, size: 20),
+                    onPressed: () {
+                      onCopyLink(history.link);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

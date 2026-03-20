@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ai_deeplink_tester/extensions/string_extensions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,6 +48,7 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
   @override
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(12);
+    final geminiApiKey = context.read<SettingsViewModel>().state.geminiApiKey;
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n?.common_text_settings ?? '')),
       body: SingleChildScrollView(
@@ -71,14 +73,10 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                         (SettingsViewModel viewModel) =>
                             viewModel.state.geminiApiKey?.isNotEmpty == true,
                       )
-                      ? '••••••••'
+                      ? geminiApiKey?.formatKey()
                       : context.l10n?.settings_hint_ai_key,
                   icon: Icons.key,
                   onTap: () {
-                    final geminiApiKey = context
-                        .read<SettingsViewModel>()
-                        .state
-                        .geminiApiKey;
                     _showApiKeyBottomSheet(context, geminiApiKey);
                   },
                 ),

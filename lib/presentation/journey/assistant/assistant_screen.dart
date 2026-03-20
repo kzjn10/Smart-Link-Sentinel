@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../core/base/base_state.dart';
+import '../../../domain/models/deeplink_analysis_result.dart';
 import '../../../extensions/context_extensions.dart';
 import '../../../extensions/qr_scan_extension.dart';
 import '../../../extensions/string_extensions.dart';
@@ -99,23 +100,30 @@ class _AssistantScreenViewState extends XStateWidget<_AssistantScreenView> {
                 Expanded(
                   child: ListView(
                     controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    padding: const .symmetric(vertical: 24),
                     children: [
-                      if (state.viewState == ViewState.initial)
-                        const SizedBox(
-                          height: 24,
-                          child: Text('Send a deep link above to analyze it.'),
+                      if (state.viewState == ViewState.initial) ...[
+                        Text(
+                          context.l10n?.common_text_enterLink ?? '',
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: context.tertiaryColor,
+                          ),
                         ),
-                      if (state.viewState == ViewState.loading)
+                      ],
+                      if (state.viewState == ViewState.loading) ...[
                         const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
+                          padding: .symmetric(vertical: 20),
                           child: _AssistantResultShimmer(),
                         ),
+                      ],
                       if (state.viewState == ViewState.loaded) ...[
                         _AssistantResultCard(
                           finalUrl: state.finalUrl,
                           status: state.status,
+                          isNested: state.isNested,
+                          nestedLinkDetails: state.nestedLinkDetails,
                           detectedParams: state.detectedParams,
+                          validationIssues: state.validationIssues,
                           securityWarning: state.securityWarning,
                           suggestion: state.suggestion,
                         ),
@@ -154,14 +162,20 @@ class _AssistantResultCard extends StatelessWidget {
   const _AssistantResultCard({
     required this.finalUrl,
     required this.status,
+    required this.isNested,
+    required this.nestedLinkDetails,
     required this.detectedParams,
+    required this.validationIssues,
     required this.securityWarning,
     required this.suggestion,
   });
 
   final String? finalUrl;
   final String? status;
+  final bool? isNested;
+  final NestedLinkDetails? nestedLinkDetails;
   final Map<String, String> detectedParams;
+  final List<String> validationIssues;
   final String? securityWarning;
   final String? suggestion;
 
@@ -176,15 +190,62 @@ class _AssistantResultCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            context.l10n?.common_text_disclaimer ?? '',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.tertiaryColor,
+            ),
+          ),
           SectionHeader(title: context.l10n?.common_text_generatedDeepLink),
           if (finalUrl != null && finalUrl!.isNotEmpty) ...[
             ElementRow(label: context.l10n?.common_text_data, value: finalUrl),
           ],
           ElementRow(label: context.l10n?.common_text_status, value: status),
+          if (isNested != null)
+            ElementRow(
+              label: context.l10n?.common_text_containsNestedLink,
+              value: isNested == true
+                  ? context.l10n?.common_text_yes
+                  : context.l10n?.common_text_no,
+            ),
           if (detectedParams.isNotEmpty) ...[
             SectionHeader(title: context.l10n?.common_text_detectedParams),
             ...detectedParams.entries.map(
               (e) => ElementRow(label: e.key, value: e.value),
+            ),
+          ],
+          if (nestedLinkDetails != null) ...[
+            SectionHeader(title: context.l10n?.common_text_nestedLinkDetails),
+            ElementRow(
+              label: context.l10n?.common_text_parameterKey,
+              value: nestedLinkDetails!.parameterKey,
+            ),
+            ElementRow(
+              label: context.l10n?.common_text_decodedValue,
+              value: nestedLinkDetails!.decodedValue,
+            ),
+            ElementRow(
+              label: context.l10n?.common_text_internalScheme,
+              value: nestedLinkDetails!.internalScheme,
+            ),
+            ElementRow(
+              label: context.l10n?.common_text_isValidInternal,
+              value: nestedLinkDetails!.isValidInternal == null
+                  ? ''
+                  : nestedLinkDetails!.isValidInternal == true
+                  ? context.l10n?.common_text_yes
+                  : context.l10n?.common_text_no,
+            ),
+          ],
+          if (validationIssues.isNotEmpty) ...[
+            SectionHeader(title: context.l10n?.common_text_validationIssues),
+            ...validationIssues.map(
+              (issue) => Text(
+                issue,
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: context.errorColor,
+                ),
+              ),
             ),
           ],
           if (securityWarning != null && securityWarning!.isNotEmpty) ...[
