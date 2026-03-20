@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ai_deeplink_tester/core/constant/language_constant.dart';
 import 'package:ai_deeplink_tester/extensions/string_extensions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                       )
                       ? geminiApiKey?.formatKey()
                       : context.l10n?.settings_hint_ai_key,
-                  icon: Icons.key,
+                  icon: Icons.key_outlined,
                   onTap: () {
                     _showApiKeyBottomSheet(context, geminiApiKey);
                   },
@@ -94,7 +95,9 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                             : (context.l10n?.settings_text_lightMode ?? ''),
                       ),
                       secondary: Icon(
-                        isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                        isDarkMode
+                            ? Icons.dark_mode_outlined
+                            : Icons.light_mode_outlined,
                       ),
                       value: isDarkMode,
                       onChanged: (value) {
@@ -115,11 +118,41 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                       subtitle: languageCode == 'vi'
                           ? (context.l10n?.settings_language_vi ?? '')
                           : (context.l10n?.settings_language_en ?? ''),
-                      icon: Icons.language,
+                      icon: Icons.language_outlined,
                       onTap: () =>
                           _showLanguageBottomSheet(context, languageCode),
                     );
                   },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
+                  child: Divider(
+                    color: context.tertiaryFixedDimColor.withValues(alpha: .2),
+                  ),
+                ),
+                _buildMenuItem(
+                  context,
+                  title: context.l10n?.common_text_privacyPolicy,
+                  icon: Icons.privacy_tip_outlined,
+                  onTap: () async {},
+                ),
+                _buildMenuItem(
+                  context,
+                  title: context.l10n?.common_text_termsOfService,
+                  icon: Icons.policy_outlined,
+                  onTap: () async {},
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
+                  child: Divider(
+                    color: context.tertiaryFixedDimColor.withValues(alpha: .2),
+                  ),
                 ),
                 _buildMenuItem(
                   context,
@@ -265,38 +298,34 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
     BuildContext sheetContext, {
     required String? currentLang,
   }) {
+    var language = languages[currentLang ?? 'en-US'];
+    language = language?.substring(8, language.length);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: XBottomSheetContent(
         padding: EdgeInsets.zero,
-        height: context.deviceHeight * 0.3,
         title: context.l10n?.settings_language,
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            ListTile(
-              title: Text(context.l10n?.settings_language_en ?? 'English'),
-              trailing: (currentLang == null || currentLang == 'en')
-                  ? const Icon(Icons.check)
-                  : null,
-              onTap: () {
-                context.read<SettingsViewModel>().changeLanguage('en');
-                getIt<LocaleCubit>().changeLocale('en');
-                Navigator.pop(sheetContext);
-              },
-            ),
-            ListTile(
-              title: Text(context.l10n?.settings_language_vi ?? 'Tiếng Việt'),
-              trailing: currentLang == 'vi' ? const Icon(Icons.check) : null,
-              onTap: () {
-                context.read<SettingsViewModel>().changeLanguage('vi');
-                getIt<LocaleCubit>().changeLocale('vi');
-                Navigator.pop(sheetContext);
-              },
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ...languages.entries.map(
+                (e) => ListTile(
+                  title: Text(e.value),
+                  trailing: (currentLang == null || currentLang == e.key)
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () {
+                    context.read<SettingsViewModel>().changeLanguage(e.key);
+                    getIt<LocaleCubit>().changeLocale(e.key);
+                    Navigator.pop(sheetContext);
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

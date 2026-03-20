@@ -44,6 +44,8 @@
   "common_text_validationIssues": "Validation Issues",
   "common_text_yes": "Yes",
   "common_text_no": "no",
+  "common_text_privacyPolicy": "Privacy Policy",
+  "common_text_termsOfService": "Terms of Service",
 
 
   "common_tooltip_clear": "Clear",

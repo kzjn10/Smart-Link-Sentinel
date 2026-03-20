@@ -43,7 +43,7 @@ class _AiDeeplinkAppState extends State<AiDeeplinkApp> {
           return BlocBuilder<LocaleCubit, String?>(
             builder: (context, langCode) {
               return MaterialApp.router(
-                title: 'AI Deeplink Tester',
+                title: 'Smart Link Sentinel',
                 theme: theme,
                 darkTheme: darkTheme,
                 locale: langCode != null ? Locale(langCode) : null,

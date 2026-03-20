@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="ai_deeplink_tester"
+        android:label="Smart Link Sentinel"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

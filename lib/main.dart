@@ -8,6 +8,5 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configurationDependencies();
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
-
   runApp(AiDeeplinkApp(savedThemeMode));
 }
