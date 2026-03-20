@@ -11,6 +11,11 @@ abstract class AssistantState with _$AssistantState {
     @Default(ViewState.initial) ViewState viewState,
     String? errorMessage,
     @Default(false) bool isSending,
+    String? finalUrl,
+    String? status,
+    @Default(<String, String>{}) Map<String, String> detectedParams,
+    String? securityWarning,
+    String? suggestion,
   }) = _AssistantState;
 }
 

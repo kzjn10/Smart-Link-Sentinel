@@ -7,8 +7,7 @@ import '../../../core/utils/app_logger.dart';
 import '../../../di/injection.dart';
 import '../../../extensions/context_extensions.dart';
 import '../../../extensions/qr_scan_extension.dart';
-import '../../widget/x_input_link_text_field.dart';
-import '../../widget/x_state_widget.dart';
+import '../../widget/widget.dart';
 import 'deeplink_state.dart';
 import 'deeplink_view_model.dart';
 
@@ -125,30 +124,28 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     return Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 16,
-                      ),
+                      padding: const .symmetric(vertical: 12, horizontal: 16),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: context.primaryColor),
+                        borderRadius: .circular(12),
+                        border: Border.all(
+                          color: context.primaryColor.withAlpha(100),
+                        ),
                       ),
                       child: Column(
                         children: [
-                          _SectionHeader(
+                          SectionHeader(
                             title: context.l10n?.common_text_urlParts ?? '',
                           ),
                           ...state.parsedData.entries.map(
-                            (e) => _ElementRow(label: e.key, value: e.value),
+                            (e) => ElementRow(label: e.key, value: e.value),
                           ),
                           if (state.queryParameters.entries.isNotEmpty) ...[
-                            const SizedBox(height: 8),
-                            _SectionHeader(
+                            SectionHeader(
                               title:
                                   context.l10n?.common_text_queryString ?? '',
                             ),
                             ...state.queryParameters.entries.map(
-                              (e) => _ElementRow(label: e.key, value: e.value),
+                              (e) => ElementRow(label: e.key, value: e.value),
                             ),
                           ],
                         ],
@@ -178,70 +175,5 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
         );
       }
     }
-  }
-}
-
-// ─────────────────────────────────────────────
-// Section header
-// ─────────────────────────────────────────────
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: context.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: context.primaryColor,
-            ),
-          ),
-          Divider(color: context.primaryColor.withAlpha(50)),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────
-// Element row
-// ─────────────────────────────────────────────
-class _ElementRow extends StatelessWidget {
-  const _ElementRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        crossAxisAlignment: .start,
-        mainAxisAlignment: .start,
-        spacing: 4,
-        children: [
-          Expanded(
-            flex: 3,
-            child: Text(
-              label,
-              style: context.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 7,
-            child: SelectableText(value, style: context.textTheme.bodyMedium),
-          ),
-        ],
-      ),
-    );
   }
 }

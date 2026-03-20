@@ -3,6 +3,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../core/constant/app_constant.dart';
+import '../../domain/models/deeplink_analysis_result.dart';
 import '../../domain/repositories/generative_repository.dart';
 
 const String _systemInstruction = 'assets/prompts/system_instruction.md';
@@ -10,13 +11,13 @@ const String _systemInstruction = 'assets/prompts/system_instruction.md';
 @Injectable(as: GenerativeRepository)
 class GenerativeRepositoryImpl implements GenerativeRepository {
   @override
-  Future<void> analyzeLink({
+  Future<DeeplinkAnalysisResult> analyzeLink({
     required String link,
     required String apiKey,
   }) async {
     final systemInstructionText = await loadSystemInstruction();
     final model = GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-3-flash-preview',
       apiKey: apiKey,
       systemInstruction: Content.system(systemInstructionText),
       tools: [
@@ -25,12 +26,26 @@ class GenerativeRepositoryImpl implements GenerativeRepository {
       toolConfig: ToolConfig(
         functionCallingConfig: FunctionCallingConfig(
           mode: FunctionCallingMode.any,
-          allowedFunctionNames: {'respond_with_products'},
+          allowedFunctionNames: {generateDeepLinkTool.name},
         ),
       ),
     );
 
-    await model.generateContent([Content.text(link)]);
+    final response = await model.generateContent([Content.text(link)]);
+    for (final call in response.functionCalls) {
+      if (call.name == generateDeepLinkTool.name) {
+        return DeeplinkAnalysisResult.fromToolArgs(call.args);
+      }
+    }
+
+    String? fallbackText;
+    try {
+      fallbackText = response.text?.trim();
+    } catch (_) {
+      fallbackText = null;
+    }
+
+    return DeeplinkAnalysisResult.fallback(fallbackText);
   }
 
   String? _systemInstructionCache;

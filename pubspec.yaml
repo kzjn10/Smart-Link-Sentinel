@@ -57,6 +57,9 @@ dependencies:
   # Google Generative AI
   google_generative_ai: ^0.4.7
 
+  # Shimmer
+  shimmer: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

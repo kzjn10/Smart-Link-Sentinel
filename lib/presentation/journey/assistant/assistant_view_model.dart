@@ -13,15 +13,41 @@ class AssistantViewModel extends BaseViewModel<AssistantState> {
   Future<void> analyzeLink(String link) async {
     try {
       if (link.isEmpty || state.isSending) return;
-      emit(state.copyWith(isSending: true));
+      emit(
+        state.copyWith(
+          isSending: true,
+          viewState: .loading,
+          errorMessage: null,
+          finalUrl: null,
+          status: null,
+          detectedParams: const {},
+          securityWarning: null,
+          suggestion: null,
+        ),
+      );
       final result = await _analyzeLinkUseCase.execute(link);
-      emit(state.copyWith(isSending: false));
+      emit(
+        state.copyWith(
+          isSending: false,
+          viewState: .loaded,
+          finalUrl: result.finalUrl,
+          status: result.status,
+          detectedParams: result.detectedParams,
+          securityWarning: result.securityWarning,
+          suggestion: result.suggestion,
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(
           isSending: false,
           viewState: .error,
           errorMessage: e.toString(),
+          finalUrl: null,
+          status: null,
+          detectedParams: const {},
+          securityWarning: null,
+          suggestion: null,
         ),
       );
     }

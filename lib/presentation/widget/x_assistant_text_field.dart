@@ -8,28 +8,20 @@ class XAssistantTextField extends StatefulWidget {
     super.key,
     required this.onSend,
     required this.inputCodeController,
+    required this.isSending,
     this.hintText,
   });
 
   final TextEditingController inputCodeController;
   final VoidCallback onSend;
   final String? hintText;
+  final bool isSending;
 
   @override
   State<XAssistantTextField> createState() => _XAssistantTextFieldState();
 }
 
 class _XAssistantTextFieldState extends State<XAssistantTextField> {
-  final _onClearValueNotifier = ValueNotifier(false);
-
-  @override
-  void initState() {
-    widget.inputCodeController.addListener(() {
-      _onClearValueNotifier.value = widget.inputCodeController.text.isNotEmpty;
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -59,26 +51,15 @@ class _XAssistantTextFieldState extends State<XAssistantTextField> {
           ),
           IconButton(
             icon: const Icon(size: 22, Icons.content_paste),
-            onPressed: _pasteText,
+            onPressed: widget.isSending ? null : _pasteText,
             tooltip: context.l10n?.common_tooltip_paste,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          AnimatedBuilder(
-            animation: _onClearValueNotifier,
-            builder: (_, _) {
-              return IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: _onClearValueNotifier.value
-                    ? () {
-                        widget.inputCodeController.clear();
-                        _onClearValueNotifier.value = false;
-                        widget.onSend.call();
-                      }
-                    : null,
-                tooltip: context.l10n?.common_tooltip_clear,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              );
-            },
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: widget.isSending ? null : widget.onSend,
+            tooltip: context.l10n?.common_tooltip_clear,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
         ],
       ),
