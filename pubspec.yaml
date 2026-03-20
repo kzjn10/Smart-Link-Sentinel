@@ -94,6 +94,7 @@ flutter:
   generate: true
   assets:
     - assets/fonts/
+    - assets/prompts/system_instruction.md
 
   fonts:
     - family: GoogleSans
