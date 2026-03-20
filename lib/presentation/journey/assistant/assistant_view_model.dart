@@ -1,7 +1,6 @@
 import 'package:ai_deeplink_tester/domain/usecases/analyze_link_usecase.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../core/base/base_state.dart';
 import '../../../core/base/base_view_model.dart';
 import 'assistant_state.dart';
 
@@ -13,12 +12,17 @@ class AssistantViewModel extends BaseViewModel<AssistantState> {
 
   Future<void> analyzeLink(String link) async {
     try {
-      emit(state.copyWith(viewState: ViewState.loading));
+      if (link.isEmpty || state.isSending) return;
+      emit(state.copyWith(isSending: true));
       final result = await _analyzeLinkUseCase.execute(link);
-      emit(state.copyWith(viewState: ViewState.loaded));
+      emit(state.copyWith(isSending: false));
     } catch (e) {
       emit(
-        state.copyWith(viewState: ViewState.error, errorMessage: e.toString()),
+        state.copyWith(
+          isSending: false,
+          viewState: .error,
+          errorMessage: e.toString(),
+        ),
       );
     }
   }

@@ -1,9 +1,11 @@
 import 'package:ai_deeplink_tester/presentation/widget/x_assistant_text_field.dart';
 import 'package:ai_deeplink_tester/presentation/widget/x_state_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../extensions/qr_scan_extension.dart';
 import '../../../extensions/context_extensions.dart';
+import '../../../extensions/qr_scan_extension.dart';
+import 'assistant_view_model.dart';
 
 class AssistantScreen extends StatelessWidget {
   const AssistantScreen({super.key});
@@ -24,7 +26,6 @@ class _AssistantScreenView extends StatefulWidget {
 class _AssistantScreenViewState extends XStateWidget<_AssistantScreenView> {
   final _controller = TextEditingController();
   final _scrollController = ScrollController();
-  bool _isSending = false;
 
   @override
   void dispose() {
@@ -46,17 +47,10 @@ class _AssistantScreenViewState extends XStateWidget<_AssistantScreenView> {
   }
 
   Future<void> _handleSend() async {
-    final text = _controller.text.trim();
-    if (text.isEmpty || _isSending) return;
-
     _controller.clear();
-    setState(() => _isSending = true);
-
     _scrollToBottom();
-    // await context.read<ChatProvider>().sendMessage(text);
+    await context.read<AssistantViewModel>().analyzeLink(_controller.text);
     _scrollToBottom();
-
-    setState(() => _isSending = false);
   }
 
   @override

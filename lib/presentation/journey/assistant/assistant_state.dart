@@ -10,7 +10,7 @@ abstract class AssistantState with _$AssistantState {
   const factory AssistantState({
     @Default(ViewState.initial) ViewState viewState,
     String? errorMessage,
-    String? languageCode,
+    @Default(false) bool isSending,
   }) = _AssistantState;
 }
 
