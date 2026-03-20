@@ -34,7 +34,7 @@
   "common_text_privacyPolicy": "Privacy Policy",
   "common_text_qrCode": "Qr Code",
   "common_text_queryString": "Query String",
-  "common_text_resourceIdentifiers": "Link",
+  "common_text_link": "Link",
   "common_text_scanQrCode": "Point your camera at a QR code to scan.",
   "common_text_scanQrCodeTitle": "Scan QR Code",
   "common_text_securityWarning": "Security Warning",

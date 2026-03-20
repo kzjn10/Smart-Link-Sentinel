@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
           NavigationDestination(
             icon: Icon(Icons.link),
             selectedIcon: Icon(Icons.link_sharp),
-            label: context.l10n?.common_text_resourceIdentifiers ?? '',
+            label: context.l10n?.common_text_link ?? '',
           ),
           NavigationDestination(
             icon: Icon(Icons.history),

@@ -19,11 +19,13 @@ class SettingsViewModel extends BaseViewModel<SettingsState> {
     final langCode = await _settingsRepository.getLanguageCode();
     final themeMode = await AdaptiveTheme.getThemeMode();
 
-    emit(state.copyWith(
-      geminiApiKey: apiKey,
-      languageCode: langCode,
-      isDarkMode: themeMode == AdaptiveThemeMode.dark,
-    ));
+    emit(
+      state.copyWith(
+        geminiApiKey: apiKey,
+        languageCode: langCode ?? 'en',
+        isDarkMode: themeMode == AdaptiveThemeMode.dark,
+      ),
+    );
   }
 
   Future<void> updateGeminiApiKey(String apiKey) async {
@@ -46,4 +48,3 @@ class SettingsViewModel extends BaseViewModel<SettingsState> {
     emit(state.copyWith(languageCode: langCode));
   }
 }
-

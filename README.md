@@ -1,4 +1,4 @@
-# ai_deeplink_tester
+# Smart Link Sentinel
 
 Open source project for testing deeplinks.
 
@@ -18,6 +18,10 @@ dart run build_runner build --delete-conflicting-outputs
 
 ```bash
 flutter run --dart-define=GEMINI_MODEL=gemini-3-flash-preview --dart-define=GEMINI_KEY=YOUR_GEMINI_KEY
+```
+
+```bash
+dart run flutter_launcher_icons
 ```
 
 ## License

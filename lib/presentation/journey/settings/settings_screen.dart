@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../di/injection.dart';
 import '../../../extensions/context_extensions.dart';
+import '../../../gen/assets.gen.dart';
 import '../../shared_cubit/locale_cubit.dart';
 import '../../widget/x_bottom_sheet_content.dart';
 import '../../widget/x_input_key_text_field.dart';
@@ -44,9 +45,18 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
     if (code == null) return null;
     final trimmed = code.trim();
     if (trimmed.isEmpty) return null;
-    // We only support `en` and `vi` in AppLocalizations.
-    // Keep selections stable even if stored value contains region (e.g. `vi-VN`).
-    return trimmed.split('-').first;
+    return trimmed.split(RegExp('[-_]')).first.toLowerCase();
+  }
+
+  String _getLanguageName(String? languageCode) {
+    final normalized = _normalizeLangCode(languageCode);
+    if (normalized == null) return '';
+    for (final entry in languages.entries) {
+      if (_normalizeLangCode(entry.key) == normalized) {
+        return entry.value.substring(8, entry.value.length);
+      }
+    }
+    return '';
   }
 
   @override
@@ -124,8 +134,7 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                     return _buildMenuItem(
                       context,
                       title: context.l10n?.settings_text_language,
-                      subtitle:
-                          languages[_normalizeLangCode(languageCode)] ?? '',
+                      subtitle: _getLanguageName(languageCode),
                       icon: Icons.language_outlined,
                       onTap: () =>
                           _showLanguageBottomSheet(context, languageCode),
@@ -304,7 +313,7 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
 
   Widget _buildLanguageBottomSheetContent(
     BuildContext sheetContext, {
-    required String? currentLang,
+     String? currentLang = "en",
   }) {
     final normalizedCurrentLang = _normalizeLangCode(currentLang);
     return Padding(
@@ -321,13 +330,10 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                 (e) => ListTile(
                   title: Text(e.value),
                   trailing:
-                      (normalizedCurrentLang == null ||
-                          normalizedCurrentLang == _normalizeLangCode(e.key))
+                      (normalizedCurrentLang == _normalizeLangCode(e.key))
                       ? const Icon(Icons.check)
                       : null,
                   onTap: () {
-                    // Save only the language part to keep AppLocalizations
-                    // and UI selection logic consistent.
                     final normalizedLang = _normalizeLangCode(e.key);
                     context.read<SettingsViewModel>().changeLanguage(
                       normalizedLang,
@@ -357,11 +363,11 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
           Text(context.l10n?.common_message_appInfo ?? ''),
         ],
         applicationVersion: packageInfo.version,
-        // applicationIcon: Image.asset(
-        //   LotoAssets.graphics.ic182.path,
-        //   width: 64,
-        //   height: 64,
-        // ),
+        applicationIcon: Image.asset(
+          AiDeeplinkAssets.icons.icIcon.path,
+          width: 64,
+          height: 64,
+        ),
       );
     }
   }

@@ -53,7 +53,7 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n?.common_text_resourceIdentifiers ?? ''),
+        title: Text(context.l10n?.common_text_link ?? ''),
         actions: [
           IconButton(
             onPressed: () {
