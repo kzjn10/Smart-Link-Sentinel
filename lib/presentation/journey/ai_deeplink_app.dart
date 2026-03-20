@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 
 import '../../di/injection.dart';
+import '../../extensions/context_extensions.dart';
 import '../../l10n/app_localizations.dart';
 import '../theme/theme.dart';
 import 'router.dart';
@@ -43,7 +44,7 @@ class _AiDeeplinkAppState extends State<AiDeeplinkApp> {
           return BlocBuilder<LocaleCubit, String?>(
             builder: (context, langCode) {
               return MaterialApp.router(
-                title: 'Smart Link Sentinel',
+                title: context.l10n?.app_name ?? '',
                 theme: theme,
                 darkTheme: darkTheme,
                 locale: langCode != null ? Locale(langCode) : null,
