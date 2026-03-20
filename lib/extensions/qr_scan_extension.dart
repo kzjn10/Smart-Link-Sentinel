@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../presentation/widget/x_bottom_sheet_content.dart';
-
 import 'context_extensions.dart';
 
 extension QrScanExtension on BuildContext {
@@ -27,8 +26,7 @@ extension QrScanExtension on BuildContext {
             height: appContext.deviceHeight * 0.5,
             title: appContext.l10n?.common_text_scanQrCodeTitle,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Column(
                 children: [
                   const SizedBox(height: 20),
@@ -52,7 +50,12 @@ extension QrScanExtension on BuildContext {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(appContext.l10n?.common_text_scanQrCode ?? ''),
+                  Text(
+                    appContext.l10n?.common_text_scanQrCode ?? '',
+                    style: appContext.textTheme.bodySmall?.copyWith(
+                      color: appContext.tertiaryColor.withValues(alpha: 0.6),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   FilledButton(
                     onPressed: () {
@@ -70,4 +73,3 @@ extension QrScanExtension on BuildContext {
     );
   }
 }
-

@@ -186,13 +186,25 @@ class _HistoryScreenViewState extends XStateWidget<_HistoryScreenView> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                SizedBox.square(
-                  dimension: 150,
-                  child: PrettyQrView.data(
-                    data: link,
-                    errorCorrectLevel: QrErrorCorrectLevel.H,
-                    decoration: PrettyQrDecoration(
-                      shape: PrettyQrSmoothSymbol(color: context.tertiaryColor),
+                Container(
+                  padding: const .all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: .circular(12),
+                    border: Border.all(
+                      color: context.tertiaryColor.withValues(alpha: 0.8),
+                    ),
+                    color: context.tertiaryColor.withValues(alpha: 0.1),
+                  ),
+                  child: SizedBox.square(
+                    dimension: 130,
+                    child: PrettyQrView.data(
+                      data: link,
+                      errorCorrectLevel: QrErrorCorrectLevel.H,
+                      decoration: PrettyQrDecoration(
+                        shape: PrettyQrSmoothSymbol(
+                          color: context.tertiaryColor,
+                        ),
+                      ),
                     ),
                   ),
                 ),
