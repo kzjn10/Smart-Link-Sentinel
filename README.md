@@ -2,6 +2,8 @@
 
 Open source project for testing deeplinks.
 
+📀 https://www.youtube.com/watch?v=Km6JevQ-Xg0
+
 <div align="center">
 <img src="demo/s1.png" width="45%" />
 <img src="demo/s2.png" width="45%" />
@@ -11,7 +13,6 @@ Open source project for testing deeplinks.
 <img src="demo/s4.png" width="45%" />
 </div>
 
-[![Demo](https://img.youtube.com/vi/Km6JevQ-Xg0/0.jpg)](https://www.youtube.com/watch?v=Km6JevQ-Xg0)
 
 ## Resources
 - [🎨 Theme Builder](https://material-foundation.github.io/material-theme-builder/)
