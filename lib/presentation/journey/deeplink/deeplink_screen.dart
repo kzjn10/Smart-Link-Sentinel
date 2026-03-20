@@ -60,6 +60,7 @@ class _DeeplinkScreenViewState extends XStateWidget<_DeeplinkScreenView> {
               context.scanQrCodeToController(_linkController);
             },
             icon: Icon(Icons.qr_code_scanner),
+            tooltip: context.l10n?.common_tooltip_scanQrCode,
           ),
         ],
       ),

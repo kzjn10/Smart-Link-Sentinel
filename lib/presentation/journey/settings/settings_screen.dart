@@ -40,6 +40,15 @@ class _SettingScreenView extends StatefulWidget {
 class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
   final _apiKeyController = TextEditingController();
 
+  String? _normalizeLangCode(String? code) {
+    if (code == null) return null;
+    final trimmed = code.trim();
+    if (trimmed.isEmpty) return null;
+    // We only support `en` and `vi` in AppLocalizations.
+    // Keep selections stable even if stored value contains region (e.g. `vi-VN`).
+    return trimmed.split('-').first;
+  }
+
   @override
   void dispose() {
     _apiKeyController.dispose();
@@ -68,14 +77,14 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
               children: [
                 _buildMenuItem(
                   context,
-                  title: context.l10n?.settings_ai_key ?? '',
+                  title: context.l10n?.settings_text_aiKey ?? '',
                   subtitle:
                       context.select(
                         (SettingsViewModel viewModel) =>
                             viewModel.state.geminiApiKey?.isNotEmpty == true,
                       )
                       ? geminiApiKey?.formatKey()
-                      : context.l10n?.settings_hint_ai_key,
+                      : context.l10n?.settings_hint_aiKey,
                   icon: Icons.key_outlined,
                   onTap: () {
                     _showApiKeyBottomSheet(context, geminiApiKey);
@@ -88,7 +97,7 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                           viewModel.state.isDarkMode,
                     );
                     return SwitchListTile(
-                      title: Text(context.l10n?.settings_theme ?? ''),
+                      title: Text(context.l10n?.settings_text_theme ?? ''),
                       subtitle: Text(
                         isDarkMode
                             ? (context.l10n?.settings_text_darkMode ?? '')
@@ -114,10 +123,9 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                     );
                     return _buildMenuItem(
                       context,
-                      title: context.l10n?.settings_language,
-                      subtitle: languageCode == 'vi'
-                          ? (context.l10n?.settings_language_vi ?? '')
-                          : (context.l10n?.settings_language_en ?? ''),
+                      title: context.l10n?.settings_text_language,
+                      subtitle:
+                          languages[_normalizeLangCode(languageCode)] ?? '',
                       icon: Icons.language_outlined,
                       onTap: () =>
                           _showLanguageBottomSheet(context, languageCode),
@@ -156,7 +164,7 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                 ),
                 _buildMenuItem(
                   context,
-                  title: context.l10n?.settings_about,
+                  title: context.l10n?.settings_text_about,
                   icon: Icons.info_outline,
                   onTap: () async {
                     _showAboutDialog(context);
@@ -203,7 +211,7 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
   Widget _buildApiKeyBottomSheetContent(BuildContext sheetContext) {
     return XBottomSheetContent(
       padding: EdgeInsets.zero,
-      title: context.l10n?.settings_ai_key,
+      title: context.l10n?.settings_text_aiKey,
       child: Padding(
         padding: .symmetric(horizontal: 16, vertical: 24),
         child: Column(
@@ -219,7 +227,7 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
               child: XInputKeyTextField(
                 controller: _apiKeyController,
                 labelText: context.l10n?.common_label_geminiApiKey,
-                hintText: context.l10n?.settings_hint_ai_key,
+                hintText: context.l10n?.settings_hint_aiKey,
                 obscureText: true,
               ),
             ),
@@ -267,9 +275,9 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
                   _apiKeyController.text,
                 );
                 Navigator.pop(sheetContext);
-                showSnackBar(context, context.l10n?.settings_api_key_saved);
+                showSnackBar(context, context.l10n?.settings_text_apiKeySaved);
               },
-              child: Text(context.l10n?.settings_save ?? 'Save'),
+              child: Text(context.l10n?.settings_text_save ?? ''),
             ),
             const SizedBox(height: 16),
           ],
@@ -298,27 +306,33 @@ class _SettingScreenViewState extends XStateWidget<_SettingScreenView> {
     BuildContext sheetContext, {
     required String? currentLang,
   }) {
-    var language = languages[currentLang ?? 'en-US'];
-    language = language?.substring(8, language.length);
+    final normalizedCurrentLang = _normalizeLangCode(currentLang);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: XBottomSheetContent(
         padding: EdgeInsets.zero,
-        title: context.l10n?.settings_language,
+        title: context.l10n?.settings_text_language,
         child: SingleChildScrollView(
           child: Column(
             children: [
               ...languages.entries.map(
                 (e) => ListTile(
                   title: Text(e.value),
-                  trailing: (currentLang == null || currentLang == e.key)
+                  trailing:
+                      (normalizedCurrentLang == null ||
+                          normalizedCurrentLang == _normalizeLangCode(e.key))
                       ? const Icon(Icons.check)
                       : null,
                   onTap: () {
-                    context.read<SettingsViewModel>().changeLanguage(e.key);
-                    getIt<LocaleCubit>().changeLocale(e.key);
+                    // Save only the language part to keep AppLocalizations
+                    // and UI selection logic consistent.
+                    final normalizedLang = _normalizeLangCode(e.key);
+                    context.read<SettingsViewModel>().changeLanguage(
+                      normalizedLang,
+                    );
+                    getIt<LocaleCubit>().changeLocale(normalizedLang);
                     Navigator.pop(sheetContext);
                   },
                 ),

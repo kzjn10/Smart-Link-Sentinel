@@ -77,6 +77,7 @@ class _AssistantScreenViewState extends XStateWidget<_AssistantScreenView> {
                   context.scanQrCodeToController(_controller);
                 },
                 icon: const Icon(Icons.qr_code_scanner),
+                tooltip: context.l10n?.common_tooltip_scanQrCode,
               ),
             ],
           ),
