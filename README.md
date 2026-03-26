@@ -22,6 +22,44 @@ Open source project for testing deeplinks.
 - `YOUR_GEMINI_KEY`: The API key for the model. How to get it? 👉 https://aistudio.google.com/
 
 
+## Project Structure
+This app is organized to resemble a "clean architecture" style layering inside `lib/`:
+
+- `lib/main.dart`: app entry point and high-level setup
+- `lib/core/`: shared building blocks (base classes, constants, utilities)
+- `lib/di/`: dependency injection wiring (powered by `injectable` + `get_it`)
+- `lib/domain/`: domain layer (use-cases + repository contracts + core domain models)
+- `lib/data/`: data layer (data sources, repository implementations, mappers, DTO/models)
+- `lib/presentation/`: UI + state management (screens like `journey/`, cubits, themes, reusable widgets)
+- `lib/extensions/`: convenience extension methods used across the app
+- `lib/gen/`: generated code for assets/fonts and other `flutter_gen` outputs
+
+## What this project helps a new learner learn
+If you’re new to Flutter, this repo is a practical playground to learn how to:
+
+- Structure an app into layers (`presentation` / `domain` / `data`) and keep responsibilities separated
+- Use Bloc-style state management with `flutter_bloc`
+- Configure routing with `go_router`
+- Set up DI and generated wiring via `injectable`
+- Persist local data with `drift` (SQLite) instead of ad-hoc storage
+- Model immutable data and serialization with `freezed` + `json_serializable`
+- Work with code generation (`build_runner`) and `flutter_gen`
+- Integrate real device features like QR scanning (`mobile_scanner`) and launching URLs (`url_launcher`)
+- Wire an AI feature using `google_generative_ai` (controlled via the provided env vars)
+
+## Tech Stack
+- Framework: `Flutter` / `Dart`
+- State management: `flutter_bloc`
+- Routing: `go_router`
+- Dependency injection: `injectable` + `get_it`
+- Immutable models + JSON: `freezed` + `json_serializable` (+ `json_annotation`)
+- Local database: `drift` + `drift_flutter` (+ `sqlite3_flutter_libs`)
+- Deeplink / URL launching: `url_launcher`
+- QR scanning / display: `mobile_scanner` + `pretty_qr_code`
+- Theming: `adaptive_theme`
+- Extras used in the UI: `shimmer`, `flutter_slidable`
+- AI integration: `google_generative_ai`
+
 ## Build project
 
 ```bash
