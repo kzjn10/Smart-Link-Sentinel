@@ -23,7 +23,16 @@ Open source project for testing deeplinks.
 
 
 ## Project Structure
-This app is organized to resemble a "clean architecture" style layering inside `lib/`:
+This repo uses the standard Flutter layout at the root, with a layered architecture inside `lib/`:
+
+- `android/`, `ios/`, `web/`, `windows/`, `macos/`, `linux/`: platform-specific app targets
+- `assets/`: app assets (fonts, icons, prompt markdown, etc.)
+- `demo/`: images used for README previews
+- `lib/`: main application code (layered)
+- `script/`: helper scripts used during development
+- `test/`: widget/unit tests
+
+Layered architecture inside `lib/`:
 
 - `lib/main.dart`: app entry point and high-level setup
 - `lib/core/`: shared building blocks (base classes, constants, utilities)
@@ -33,6 +42,54 @@ This app is organized to resemble a "clean architecture" style layering inside `
 - `lib/presentation/`: UI + state management (screens like `journey/`, cubits, themes, reusable widgets)
 - `lib/extensions/`: convenience extension methods used across the app
 - `lib/gen/`: generated code for assets/fonts and other `flutter_gen` outputs
+
+### Directory Tree
+```text
+.
+├── android/
+├── ios/
+├── macos/
+├── linux/
+├── web/
+├── windows/
+├── assets/
+│   ├── fonts/
+│   ├── icons/
+│   └── prompts/
+├── demo/
+├── lib/
+│   ├── core/
+│   │   ├── base/
+│   │   ├── constant/
+│   │   └── utils/
+│   ├── di/
+│   ├── domain/
+│   │   ├── models/
+│   │   ├── repositories/
+│   │   └── usecases/
+│   ├── data/
+│   │   ├── data_sources/
+│   │   ├── mapper/
+│   │   ├── models/
+│   │   └── repositories/
+│   ├── extensions/
+│   ├── gen/ (generated)
+│   └── presentation/
+│       ├── journey/
+│       ├── shared_cubit/
+│       ├── theme/
+│       └── widget/
+├── script/
+├── test/
+├── build/ (generated)
+├── pubspec.yaml
+├── analysis_options.yaml
+├── pubspec.lock
+├── flutter_launcher_icons.yaml
+├── l10n.yaml
+├── LICENSE
+└── README.md
+```
 
 ## What this project helps a new learner learn
 If you’re new to Flutter, this repo is a practical playground to learn how to:
