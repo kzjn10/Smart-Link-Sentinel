@@ -301,7 +301,7 @@ class _HistoryRow extends StatelessWidget {
             },
             borderRadius: borderRadius,
             child: Padding(
-              padding: const .symmetric(vertical: 24.0, horizontal: 16),
+              padding: const .symmetric(vertical: 8.0, horizontal: 16),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,

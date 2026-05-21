@@ -2,7 +2,7 @@ name: ai_deeplink_tester
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.11.1
@@ -20,7 +20,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # DI
-  injectable: ^2.5.1
+  injectable: ^3.0.0
   get_it: ^9.2.1
   json_annotation: ^4.11.0
   freezed_annotation: ^3.1.0
@@ -52,7 +52,7 @@ dependencies:
   shared_preferences: ^2.5.2
 
   # Package info
-  package_info_plus: ^9.0.0
+  package_info_plus: ^10.1.0
 
   # Google Generative AI
   google_generative_ai: ^0.4.7
@@ -71,7 +71,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^6.0.0
-  injectable_generator: ^2.12.0
+  injectable_generator: ^3.0.2
   json_serializable: ^6.13.0
   build_runner: ^2.12.2
   drift_dev: ^2.32.0
@@ -79,9 +79,6 @@ dev_dependencies:
   freezed: ^3.2.5
   go_router_builder: ^4.2.0
   flutter_launcher_icons: ^0.14.4
-
-dependency_overrides:
-  analyzer: ^10.0.0
 
 flutter_gen:
   output: lib/gen/
